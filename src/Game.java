@@ -57,5 +57,6 @@ public class Game {
             System.out.println("Your score is: " + score(attempts));
         } 
         while (wantsToPlayAgain(sc));
+        sc.close(); 
     }
 }
