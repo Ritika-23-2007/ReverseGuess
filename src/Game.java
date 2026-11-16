@@ -12,7 +12,11 @@ public class Game {
     }
     public static int guess(int low, int high, Scanner sc) {
         int attempts = 0;
-        while(low <= high) {
+        int score = -1;
+        boolean guessed = false;
+
+        //core logic of the game, using binary search to guess the number
+        while(low <= high && !guessed) {
             int guess = low + (high - low) / 2;
             attempts++;
             System.out.println("Is your number smaller, bigger or equal to " + guess + "? (Type 'lower', 'higher', or 'correct')");
@@ -25,16 +29,21 @@ public class Game {
             } 
             else if(response.equals("correct")) {
                 System.out.println("Yay! I guessed your number: " + guess);
-                return attempts;
+                guessed = true;
+                score = 100 - attempts * 5;
+                return score;
             } 
             else {
                 System.out.println("Invalid response. Please type 'lower', 'higher', or 'correct'.");
+                attempts--; // Don't count invalid responses as attempts
             }
         }
-        return attempts;
-    }
-    public static int  score(int attempts) {
-        return 100 - attempts * 5;
+        if(!guessed) {
+            System.out.println("Hey! You gave contradictory hints—no such number exists!");
+            return -1; // Return -1 to indicate an error due to contradictory hints        
+        }
+        score = attempts * 5;
+        return score;
     }
     public static boolean wantsToPlayAgain(Scanner sc) {
         System.out.print("Do you want to play again? (yes/no): ");
@@ -47,14 +56,13 @@ public class Game {
     }
 
     public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
         do {
-            Scanner sc = new Scanner(System.in);
             int low = 1;
-            int high = 100;
+            int high = 1000000;
             begin(low, high, sc);
-            int attempts = guess(low, high, sc);
-            System.out.println("It took me " + attempts + " attempts to guess your number.");
-            System.out.println("Your score is: " + score(attempts));
+            int score = guess(low, high, sc);
+            System.out.println("Your score is: " + score);
         } 
         while (wantsToPlayAgain(sc));
         sc.close(); 
